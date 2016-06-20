@@ -19,12 +19,7 @@
     
     
     self.window.rootViewController=[[FBTabBarViewController alloc]init];
-    [[FBNetWork installNetWork] postRequestBody:nil andAction:@"109-34" andSuccess:^(NSDictionary *resultDict) {
-        ;
-    } andFail:^(NSString *errStr, id errorObj) {
-        ;
-    }];
-    
+        
     // Override point for customization after application launch.
     return YES;
 }

@@ -7,7 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MJRefresh.h"
 
 @interface FBBaseTableViewController : UITableViewController
+
+
+
+-(void)addRefreshHead;
+-(void)addRefresFooder;
+-(void)requestHeaderData;
+
+-(void)requestFooderData;
 
 @end

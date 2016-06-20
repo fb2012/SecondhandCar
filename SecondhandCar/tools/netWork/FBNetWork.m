@@ -36,22 +36,77 @@
     [manager.requestSerializer setTimeoutInterval:60];
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithArray:@[@"text/plain",@"text/json",@"text/javascript",@"application/json",@"text/html"]];
     
-    
-    [manager POST:[NSString stringWithFormat:@"%@%@",hostURL,action] parameters:[self paramsPin:body] progress:^(NSProgress * _Nonnull uploadProgress) {
+    NSDictionary *tempParams=[self paramsPin:body];
+    DLog(@"params=%@",tempParams);
+
+    [manager GET:[NSString stringWithFormat:@"%@%@",hostURL,action] parameters:tempParams progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        DLog(@"response==%@",responseObject);
         
-        success(responseObject);
+        if([responseObject isKindOfClass:[NSDictionary class]])
+        {
+            if([ [FBUnilts emptyFormateData: responseObject[fbRes_code]] isEqual:fbResSuccessCode])
+            {
+                success(responseObject[fbRes_body]);
+            }else
+            {
+                fail(responseObject[fbRes_error],responseObject);
+                
+            }
+        }else
+        {
+            fail(fbNetWorkError,@"");
+                 
+        }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         DLog(@"error=%@",error.description);
         
-        fail(error.description,@"");
+        fail(fbNetWorkError,error);
     }];
 
     
+}
+
+/**
+ *  get请求
+ *
+ *  @param body    参数
+ *  @param action  接口名
+ */
+-(void)getRequestBody:(NSDictionary *)body andAction:(NSString *)action andProgress:(float)progress andSuccess:(void(^)(NSDictionary *resultDict))success andFail:(void(^)(NSString *errStr,id errorObj))fail
+{
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    manager.requestSerializer=[AFJSONRequestSerializer serializer];
+    [manager.requestSerializer setTimeoutInterval:60];
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithArray:@[@"text/plain",@"text/json",@"text/javascript",@"application/json",@"text/html"]];
     
+    NSDictionary *tempParams=[self paramsPin:body];
+    DLog(@"params=%@",tempParams);
     
+    [manager GET:[NSString stringWithFormat:@"%@%@",hostURL,action] parameters:tempParams progress:^(NSProgress * _Nonnull uploadProgress) {
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        if([responseObject isKindOfClass:[NSDictionary class]])
+        {
+            if([responseObject[fbRes_code] isEqual:fbResSuccessCode])
+            {
+                success(responseObject[fbRes_body]);
+            }else
+            {
+                fail(responseObject[fbRes_error],responseObject);
+                
+            }
+        }else
+        {
+            fail(fbNetWorkError,@"");
+            
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        DLog(@"error=%@",error.description);
+        
+        fail(fbNetWorkError,error);
+    }];
 }
 
 -(NSDictionary *)paramsPin:(NSDictionary *)params
@@ -65,18 +120,18 @@
     [theTemp setObject:[self showapi_timestamp] forKey:@"showapi_timestamp"];
 
     //签名
-    NSString *theSign=[self dictionUtils:theTemp];
-    theSign=[self md5HexDigest:theSign];
-    if(theSign)
-    {
-        [theTemp setObject:theSign forKey:@"showapi_sign"];
-    }else
-    {
+//    NSString *theSign=[self dictionUtils:theTemp];
+//    theSign=[self md5HexDigest:theSign];
+//    if(theSign)
+//    {
+//        [theTemp setObject:theSign forKey:@"showapi_sign"];
+//    }else
+//    {
         [theTemp setObject:appSecret forKey:@"showapi_sign"];
 
-    }
+    //}
     
-
+    
     
     return theTemp;
 }

@@ -20,4 +20,13 @@
  */
 -(void)postRequestBody:(NSDictionary *)body andAction:(NSString *)action andSuccess:(void(^)(NSDictionary *resultDict))success andFail:(void(^)(NSString *errStr,id errorObj))fail;
 
+
+
+/**
+ *  get请求
+ *
+ *  @param body    参数
+ *  @param action  接口名
+ */
+-(void)getRequestBody:(NSDictionary *)body andAction:(NSString *)action andProgress:(float)progress andSuccess:(void(^)(NSDictionary *resultDict))success andFail:(void(^)(NSString *errStr,id errorObj))fail;
 @end

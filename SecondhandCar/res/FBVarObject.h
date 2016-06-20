@@ -8,8 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "FBNetWork.h"
-
-
+#import "FBNetConfig.h"
+#import "FBTools.h"
+#import "FBUnilts.h"
 @interface FBVarObject : NSObject
 
 @end
